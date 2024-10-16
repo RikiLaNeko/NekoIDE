@@ -1,0 +1,8 @@
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/NekoIDE.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/neko.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/NekoIDE_autogen_timestamp_deps.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/NekoIDE_autogen.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/neko_autogen_timestamp_deps.dir
+/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/neko_autogen.dir
