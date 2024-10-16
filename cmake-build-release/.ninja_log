@@ -1,9 +1,0 @@
-# ninja log v6
-0	191	1729076132231957067	NekoIDE_autogen/timestamp	bd13ac9fcf286def
-0	191	1729076132231957067	NekoIDE_autogen/mocs_compilation.cpp	bd13ac9fcf286def
-0	191	1729076132231957067	/home/dedsec/CLionProjects/NekoIDE/cmake-build-release/NekoIDE_autogen/timestamp	bd13ac9fcf286def
-0	191	1729076132231957067	/home/dedsec/CLionProjects/NekoIDE/cmake-build-release/NekoIDE_autogen/mocs_compilation.cpp	bd13ac9fcf286def
-191	217	1729076132235290386	CMakeFiles/NekoIDE.dir/NekoIDE_autogen/mocs_compilation.cpp.o	58cdeeacc98bc672
-192	320	1729076132235290386	CMakeFiles/NekoIDE.dir/neko.c.o	9d3f3b3118f3f580
-192	1973	1729076132235290386	CMakeFiles/NekoIDE.dir/main.cpp.o	9c31c1172aac62f6
-1973	2186	1729076134018615526	NekoIDE	3ec4854a1a4e7bf9
