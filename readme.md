@@ -20,7 +20,7 @@ This IDE allows you to write, run, and debug NekoLang code. It features syntax h
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/neko-lang-ide.git
+   git clone https://github.com/RikiLaNeko/NekoIDE.git
    ```
 
 2. **Build the Project**
@@ -102,7 +102,7 @@ Cet IDE vous permet d'écrire, d'exécuter et de déboguer du code NekoLang. Il 
 1. **Clonez le Référentiel**
 
    ```bash
-   git clone https://github.com/votrenomutilisateur/neko-lang-ide.git
+   git clone https://github.com/RikiLaNeko/NekoIDE.git
    ```
 
 2. **Construisez le Projet**
