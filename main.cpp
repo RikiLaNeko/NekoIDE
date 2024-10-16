@@ -1,3 +1,4 @@
+// main.cpp (updated)
 #include <QApplication>
 #include <QMainWindow>
 #include <QPlainTextEdit>
@@ -23,6 +24,8 @@
 #include <QScrollBar>
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QProcess>
+#include <QDir>
 
 // Include the NekoLang interpreter function
 extern "C" {
@@ -60,7 +63,11 @@ public:
         // Keywords
         keywordFormat.setForeground(Qt::blue);
         keywordFormat.setFontWeight(QFont::Bold);
-        QStringList keywordPatterns = {"\\bneko\\b", "\\bpurr\\b", "\\bkitten\\b", "\\bmeow\\b", "\\bcat\\b", "\\bcatnap\\b", "\\bcatnip\\b", "\\bwhiskers\\b", "\\bpaws\\b"};
+        QStringList keywordPatterns = {
+            "\\bneko\\b", "\\bpurr\\b", "\\bkitten\\b", "\\bmeow\\b",
+            "\\bcat\\b", "\\bcatnap\\b", "\\bcatnip\\b", "\\bwhiskers\\b", "\\bpaws\\b",
+            "\\bwindow\\b", "\\bbutton\\b", "\\bfunction\\b", "\\bonClick\\b"
+        };
         for (const QString &pattern : keywordPatterns) {
             rule.pattern = QRegularExpression(pattern);
             rule.format = keywordFormat;
@@ -101,7 +108,7 @@ class CodeEditor : public QPlainTextEdit {
     Q_OBJECT
 public:
     CodeEditor(QWidget *parent = nullptr) : QPlainTextEdit(parent) {
-        QStringList keywords = {"neko", "purr", "kitten", "meow", "cat", "catnap", "catnip", "whiskers", "paws"};
+        QStringList keywords = {"neko", "purr", "kitten", "meow", "cat", "catnap", "catnip", "whiskers", "paws", "window", "button", "function", "onClick"};
         completer = new QCompleter(keywords, this);
         completer->setWidget(this);
         completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -237,15 +244,15 @@ public:
         // Create status bar
         statusBar()->showMessage("Ready");
 
-        // Connect actions using the old syntax
-        connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
-        connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
-        connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
-        connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveFileAs()));
-        connect(runAction, SIGNAL(triggered()), this, SLOT(runCode()));
-        connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-        connect(toggleThemeAction, SIGNAL(triggered()), this, SLOT(toggleTheme()));
-        connect(docAction, SIGNAL(triggered()), this, SLOT(showDocumentation()));
+        // Connect actions
+        connect(newAction, &QAction::triggered, this, &NekoMainWindow::newFile);
+        connect(openAction, &QAction::triggered, this, &NekoMainWindow::openFile);
+        connect(saveAction, &QAction::triggered, this, &NekoMainWindow::saveFile);
+        connect(saveAsAction, &QAction::triggered, this, &NekoMainWindow::saveFileAs);
+        connect(runAction, &QAction::triggered, this, &NekoMainWindow::runCode);
+        connect(exitAction, &QAction::triggered, this, &NekoMainWindow::close);
+        connect(toggleThemeAction, &QAction::triggered, this, &NekoMainWindow::toggleTheme);
+        connect(docAction, &QAction::triggered, this, &NekoMainWindow::showDocumentation);
 
         currentFilePath = "";
 
@@ -296,37 +303,72 @@ private slots:
     }
 
     void runCode() {
-        qDebug() << "runCode started";
-
         QString code = codeEditor->toPlainText();
-        qDebug() << "Code to execute: " << code;
+
+        // Check if the code contains GUI keywords
+        bool isGuiApp = code.contains("window") || code.contains("button");
 
         // Clear the output console
         outputConsole->clear();
-        qDebug() << "Output console cleared";
 
         // Convert QString to char*
         QByteArray codeBytes = code.toUtf8();
         char *codeCStr = codeBytes.data();
-        qDebug() << "Converted QString to char*: " << codeCStr;
 
         // Redirect stdout to capture interpreter output
         FILE *fp = freopen("output.txt", "w", stdout);
         if (!fp) {
             QMessageBox::warning(this, "Error", "Could not redirect stdout");
-            qDebug() << "Failed to redirect stdout";
             return;
         }
-        qDebug() << "Stdout redirected successfully";
 
-        // Check for any errors during execution
-        try {
-            qDebug() << "Running interpreter";
-            interpret(codeCStr);
-            qDebug() << "Interpreter finished running";
-        } catch (...) {
-            outputConsole->setPlainText("Error: NekoLang interpreter crashed.");
-            qDebug() << "Interpreter crashed";
+        if (isGuiApp) {
+            // Save the code to a temporary file
+            QString tempFilePath = QDir::temp().filePath("temp_code.neko");
+            QFile tempFile(tempFilePath);
+            if (tempFile.open(QFile::WriteOnly | QFile::Text)) {
+                QTextStream out(&tempFile);
+                out << code;
+                tempFile.close();
+            } else {
+                QMessageBox::warning(this, "Error", "Could not write temporary code file");
+                return;
+            }
+
+            // Run the interpreter as a separate process
+            QProcess *process = new QProcess(this);
+            QString interpreterPath = QCoreApplication::applicationDirPath() + "/neko"; // Path to the interpreter executable
+            process->setProgram(interpreterPath);
+            process->setArguments(QStringList() << tempFilePath);
+            process->start();
+
+            if (!process->waitForStarted()) {
+                QMessageBox::warning(this, "Error", "Could not start NekoLang interpreter");
+                return;
+            }
+
+            // Wait for the process to finish
+            process->waitForFinished(-1);
+
+            // Read the output
+            QString output = process->readAllStandardOutput();
+            outputConsole->setPlainText(output);
+
+            // Handle errors
+            QString errorOutput = process->readAllStandardError();
+            if (!errorOutput.isEmpty()) {
+                QMessageBox::warning(this, "Interpreter Error", errorOutput);
+            }
+
+            // Clean up
+            tempFile.remove();
+        } else {
+            // For console applications, run directly
+            try {
+                interpret(codeCStr);
+            } catch (...) {
+                outputConsole->setPlainText("Error: NekoLang interpreter crashed.");
+            }
         }
 
         // Restore stdout
@@ -336,22 +378,17 @@ private slots:
 #else
         freopen("/dev/tty", "w", stdout);
 #endif
-        qDebug() << "Stdout restored";
 
         // Read output from file
         QFile outputFile("output.txt");
         if (outputFile.open(QFile::ReadOnly | QFile::Text)) {
             QTextStream in(&outputFile);
-            outputConsole->setPlainText(in.readAll());
+            outputConsole->setPlainText(outputConsole->toPlainText() + in.readAll());
             outputFile.close();
             outputFile.remove();  // Clean up
-            qDebug() << "Output file read successfully";
         } else {
             QMessageBox::warning(this, "Error", "Could not read output");
-            qDebug() << "Failed to read output file";
         }
-
-        qDebug() << "runCode completed";
     }
 
     void toggleTheme() {
@@ -375,11 +412,18 @@ private slots:
                                 "  - catnap: Else statement\n"
                                 "  - catnip: Elif statement\n"
                                 "  - whiskers: While loop\n"
-                                "  - paws: For loop\n\n"
-                                "Example:\n"
+                                "  - paws: For loop\n"
+                                "  - window: Create a window\n"
+                                "  - button: Create a button\n"
+                                "  - function: Define a function\n"
+                                "  - onClick: Event handler for clicks\n\n"
+                                "Example GUI Application:\n"
                                 "  neko {\n"
-                                "      kitten name = \"Neko\"\n"
-                                "      purr \"Hello, \" + name\n"
+                                "      window mainWindow \"My App\"\n"
+                                "      button myButton \"Click Me\" mainWindow onClick handleClick\n\n"
+                                "      function handleClick() {\n"
+                                "          purr \"Button was clicked\"\n"
+                                "      }\n"
                                 "  }";
         QMessageBox::information(this, "NekoLang Documentation", documentation);
     }
