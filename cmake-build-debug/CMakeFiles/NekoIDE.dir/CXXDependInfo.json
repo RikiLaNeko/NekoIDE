@@ -1,0 +1,26 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug",
+	"dir-cur-src" : "/home/dedsec/CLionProjects/NekoIDE",
+	"dir-top-bld" : "/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug",
+	"dir-top-src" : "/home/dedsec/CLionProjects/NekoIDE",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"NekoIDE_autogen/include",
+		"/usr/include/qt",
+		"/usr/include/qt/QtCore",
+		"/usr/lib/qt/mkspecs/linux-g++",
+		"/usr/include/qt/QtGui",
+		"/usr/include/qt/QtWidgets"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/dedsec/CLionProjects/NekoIDE/cmake-build-debug/CMakeFiles/NekoIDE.dir"
+}

@@ -1,0 +1,105 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "NekoIDE",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "NekoIDE::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-NekoIDE-Release-7732340982e5a002b96c.json",
+					"name" : "NekoIDE",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "NekoIDE_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-NekoIDE_autogen-Release-0212182b79a6ad8f8c01.json",
+					"name" : "NekoIDE_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "NekoIDE_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-NekoIDE_autogen_timestamp_deps-Release-97757d0ab8614968d689.json",
+					"name" : "NekoIDE_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "neko::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-neko-Release-8132e20abb04b74727ec.json",
+					"name" : "neko",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "neko_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-neko_autogen-Release-8e1b950a051844688d7e.json",
+					"name" : "neko_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "neko_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-neko_autogen_timestamp_deps-Release-87fbb1779741f562f01a.json",
+					"name" : "neko_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/dedsec/CLionProjects/NekoIDE/cmake-build-release",
+		"source" : "/home/dedsec/CLionProjects/NekoIDE"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
