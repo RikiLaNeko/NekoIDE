@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Declare the external function
+extern char* get_user_input(const char *prompt);
 
 #define MAX_VARIABLES 100  // Maximum number of variables that can be stored
 
@@ -171,137 +170,33 @@ void interpret(char *code) {
                 printf("Syntax error in variable declaration.\n");
             }
         }
-        // Function to handle 'meow' command (user input)
+        // Handle 'meow' command (user input)
         else if (strncmp(trimmed_line, "meow", 4) == 0) {
             // Get the variable name after 'meow'
             char *var_name = trimmed_line + 4;
             var_name = trim(var_name);
 
-            // Check if using the GUI
-#ifdef USE_GUI_INPUT
-            QString input = QInputDialog::getText(nullptr, "Input Required",
-                         QString("Enter value for %1:").arg(var_name), QLineEdit::Normal);
+            // Create a prompt message
+            char prompt[100];
+            snprintf(prompt, sizeof(prompt), "Enter value for %s:", var_name);
 
-            if (input.isEmpty()) {
+            // Get input from the user using the external function
+            char *input = get_user_input(prompt);
+
+            if (input == NULL || input[0] == '\0') {
                 printf("Error: Input for %s is empty.\n", var_name);
+                free(input);  // Free allocated memory
                 return;
             }
-
-            QByteArray inputBytes = input.toUtf8();
-            char *inputCStr = inputBytes.data();
-            set_variable(var_name, inputCStr);
-#else
-            char input[100];  // Buffer to hold user input
-            printf("Enter value for %s: ", var_name);
-            fgets(input, sizeof(input), stdin);  // Get input from the user
-
-            // Check for empty input or newline character
-            if (input[0] == '\n' || input[0] == '\0') {
-                printf("Error: Input for %s is empty.\n", var_name);
-                return;
-            }
-
-            // Remove the newline character from input
-            char *newline = strchr(input, '\n');
-            if (newline) *newline = '\0';
 
             // Set the variable with the user's input
             set_variable(var_name, input);
-#endif
+
+            // Free the input string
+            free(input);
         }
-
-        // Handle 'cat' command (if statement)
-        else if (strncmp(trimmed_line, "cat", 3) == 0) {
-            // Get the condition after 'cat'
-            char *condition = trimmed_line + 3;
-            condition = trim(condition);
-
-            if (evaluate_condition(condition)) {
-                skip_block = 0;
-            } else {
-                skip_block = 1;
-            }
-        }
-        // Handle 'catnap' command (else statement)
-        else if (strcmp(trimmed_line, "catnap") == 0) {
-            skip_block = !skip_block;
-        }
-        // Handle 'catnip' command (elif statement)
-        else if (strncmp(trimmed_line, "catnip", 6) == 0) {
-            if (skip_block) {
-                // Get the condition after 'catnip'
-                char *condition = trimmed_line + 6;
-                condition = trim(condition);
-
-                if (evaluate_condition(condition)) {
-                    skip_block = 0;
-                }
-            } else {
-                skip_block = 1;
-            }
-        }
-        // Handle 'whiskers' command (while loop)
-        else if (strncmp(trimmed_line, "whiskers", 8) == 0) {
-            // Get the condition after 'whiskers'
-            char *condition = trimmed_line + 8;
-            condition = trim(condition);
-
-            // Save the current position in the code
-            char *loop_start = ptr;
-
-            while (evaluate_condition(condition)) {
-                // Interpret the loop body
-                interpret(loop_start);
-
-                // Reset the position to the start of the loop
-                ptr = loop_start;
-            }
-        }
-        // Handle 'paws' command (for loop)
-        else if (strncmp(trimmed_line, "paws", 4) == 0) {
-            // For simplicity, assume the loop is in the form "paws variable in range(start, end)"
-            char *rest = trimmed_line + 4;
-            rest = trim(rest);
-
-            // Find the 'in' keyword
-            char *in_keyword = strstr(rest, "in");
-            if (in_keyword) {
-                *in_keyword = '\0';  // Split the string at 'in'
-                char *variable = trim(rest);
-                char *range = trim(in_keyword + 2);
-
-                // Find the 'range' keyword
-                char *range_keyword = strstr(range, "range");
-                if (range_keyword) {
-                    // Get the start and end values
-                    char *start = strchr(range_keyword, '(') + 1;
-                    char *end = strchr(start, ',');
-                    *end = '\0';
-                    end++;
-                    char *end_paren = strchr(end, ')');
-                    *end_paren = '\0';
-
-                    int start_value = atoi(start);
-                    int end_value = atoi(end);
-
-                    // Save the current position in the code
-                    char *loop_start = ptr;
-
-                    for (int i = start_value; i < end_value; i++) {
-                        // Set the loop variable
-                        char value[10];
-                        sprintf(value, "%d", i);
-                        set_variable(variable, value);
-
-                        // Interpret the loop body
-                        interpret(loop_start);
-
-                        // Reset the position to the start of the loop
-                        ptr = loop_start;
-                    }
-                }
-            }
-        }
+        // Handle other commands (implement as needed)
+        // ...
     }
 }
 
@@ -333,7 +228,3 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 #endif  // BUILD_NEKO_INTERPRETER
-
-#ifdef __cplusplus
-}
-#endif

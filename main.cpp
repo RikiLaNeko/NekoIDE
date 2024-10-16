@@ -22,11 +22,31 @@
 #include <QAbstractItemView>
 #include <QScrollBar>
 #include <QInputDialog>
-
+#include <QLineEdit>
 
 // Include the NekoLang interpreter function
 extern "C" {
     void interpret(char *code);  // Declaration of the interpret function from neko.c
+
+    // Implementation of get_user_input
+    char* get_user_input(const char *prompt) {
+        QString qPrompt = QString::fromUtf8(prompt);
+        bool ok;
+        QString input = QInputDialog::getText(nullptr, "Input Required", qPrompt, QLineEdit::Normal, "", &ok);
+
+        if (ok && !input.isEmpty()) {
+            // Convert QString to char* and allocate memory
+            QByteArray inputBytes = input.toUtf8();
+            char *inputCStr = (char *)malloc(inputBytes.size() + 1);
+            strcpy(inputCStr, inputBytes.constData());
+            return inputCStr;
+        } else {
+            // Return an empty string to indicate cancellation or empty input
+            char *emptyStr = (char *)malloc(1);
+            emptyStr[0] = '\0';
+            return emptyStr;
+        }
+    }
 }
 
 // Syntax Highlighter for NekoLang
@@ -333,7 +353,6 @@ private slots:
 
         qDebug() << "runCode completed";
     }
-
 
     void toggleTheme() {
         static bool darkMode = true;
