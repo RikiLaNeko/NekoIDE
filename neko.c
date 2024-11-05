@@ -303,7 +303,7 @@ void interpret(char *code) {
             g_hash_table_insert(widget_table, strdup(button_name), button);
 
             // Get the parent widget
-            GtkWidget *parent_widget = g_hash_table_lookup(widget_table, parent_name);
+            GtkWidget *parent_widget = (GtkWidget*)g_hash_table_lookup(widget_table, parent_name);
             if (parent_widget) {
                 gtk_container_add(GTK_CONTAINER(parent_widget), button);
             } else {
